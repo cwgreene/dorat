@@ -1,2 +1,4 @@
 #!/bin/bash
-~/installs/apps/ghidra_9.1.1_PUBLIC/support/analyzeHeadless /tmp/moretmp ProjectName  -import ~/ctf/downunder/whatsrevenge/return-to-whats-revenge -deleteProject -scriptPath ~/projects/hacking/ghidrascripts -postScript "$1" 2> /dev/null | grep "INFO  $1> " | sed "s/^INFO  $1> \(.*\) (GhidraScript)/\1/"
+GHIDRA_INSTALL_DIR="~/installs/apps/ghidra_9.1.1_PUBLIC"
+GHIDRA_SCRIPTS_DIR="~/projects/hacking/ghidrascripts"
+eval "$GHIDRA_INSTALL_DIR/support/analyzeHeadless" /tmp/moretmp ProjectName  -import "$1" -deleteProject -scriptPath "$GHIDRA_SCRIPTS_DIR" -postScript "$2" 2> /dev/null | grep "INFO  $2> " | sed "s/^INFO  $2> \(.*\) (GhidraScript)/\1/"
