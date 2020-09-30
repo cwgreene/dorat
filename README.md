@@ -8,3 +8,14 @@ make it simple to perform specific analyses on specific binaries.
 As of the initial release, you'll need to edit the script and update the path to your
 Ghidra scripts directory and the Ghidra main directory. Future revisions will use
 either environment variables or a file override.
+
+```
+Usage:
+dorat BINARY SCRIPT
+```
+
+Example
+
+```
+dorat test_binary FindLibcCalls.java
+```
