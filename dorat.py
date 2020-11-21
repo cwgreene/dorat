@@ -41,11 +41,25 @@ def parse_output(proc, options):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("binary")
-    parser.add_argument("script")
-    parser.add_argument("--show-stderr", action="store_true")
-    parser.add_argument("--show-raw", action="store_true")
+    main_group = parser.add_argument_group(title="main group")
+    main_group.add_argument("--binary", help="REQUIRED: target binary")
+    main_group.add_argument("--script", help="REQUIRED: target script")
+    main_group.add_argument("--show-stderr", action="store_true", help="dump stderr")
+    main_group.add_argument("--show-raw", action="store_true", help="dump raw output")
+    list_group = parser.add_argument_group(title="list command")
+    list_group.add_argument("--list", action="store_true", help="list scripts")
     options, args = parser.parse_known_args()
+
+    if options.list:
+        # TODO: do all of the standard locations
+        for afile in os.listdir(GHIDRA_SCRIPTS_DIR):
+            if afile.endswith(".java"):
+                print(afile)
+        return
+    if not options.binary or not options.script:
+        parser.print_help()
+        print("--binary and --script are required when not used with list")
+        return
 
     proc  = subprocess.Popen(["{}/support/analyzeHeadless".format(GHIDRA_INSTALL_DIR),
             '/tmp/', 'ProjectName',
