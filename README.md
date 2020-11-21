@@ -1,7 +1,8 @@
 # Dorat
 
 Dorat is a command line interface, and workflow enabler, for Ghidra Headless. It is intended to
-make it simple to perform specific analyses on specific binaries.
+make it simple to perform specific analyses on specific binaries. Also, checkout https://github.com/cwgreene/ghidrascripts
+for some scripts that work well with dorat.
 
 # Usage
 
