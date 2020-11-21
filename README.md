@@ -39,93 +39,20 @@ FunctionCalls.java
 ```
 Execute a script on a specified binary.
 ```
-$ dorat --binary test_binary --script FunctionCalls.java
+$ dorat --binary example_binary --script DecompileFunction.java main
+undefined8 main(void)
+
 {
-  "functions" : [ {
-    "variables" : [ ],
-    "calls" : [ {
-      "funcName" : "__gmon_start__",
-      "arguments" : [ "" ],
-      "address" : "00100558"
-    } ],
-    "name" : "_init"
-  }, {
-    "variables" : [ {
-      "name" : "local_10",
-      "size" : 8,
-      "stackOffset" : -16
-    } ],
-    "calls" : [ {
-      "funcName" : "__libc_start_main",
-      "arguments" : [ "main", "in_stack_00000000", "&stack0x00000008", "__libc_csu_init", "__libc_csu_fini", "param_3", "auStack8" ],
-      "address" : "001005c4"
-    } ],
-    "name" : "_start"
-  }, {
-    "variables" : [ ],
-    "calls" : [ ],
-    "name" : "deregister_tm_clones"
-  }, {
-    "variables" : [ ],
-    "calls" : [ ],
-    "name" : "register_tm_clones"
-  }, {
-    "variables" : [ ],
-    "calls" : [ {
-      "funcName" : "__cxa_finalize",
-      "arguments" : [ "__dso_handle" ],
-      "address" : "0010067e"
-    }, {
-      "funcName" : "deregister_tm_clones",
-      "arguments" : [ "" ],
-      "address" : "00100683"
-    } ],
-    "name" : "__do_global_dtors_aux"
-  }, {
-    "variables" : [ ],
-    "calls" : [ {
-      "funcName" : "register_tm_clones",
-      "arguments" : [ "" ],
-      "address" : "001006a5"
-    } ],
-    "name" : "frame_dummy"
-  }, {
-    "variables" : [ {
-      "name" : "local_10",
-      "size" : 8,
-      "stackOffset" : -16
-    }, {
-      "name" : "local_1a",
-      "size" : 1,
-      "stackOffset" : -26
-    } ],
-    "calls" : [ {
-      "funcName" : "gets",
-      "arguments" : [ "local_1a" ],
-      "address" : "001006cd"
-    }, {
-      "funcName" : "__stack_chk_fail",
-      "arguments" : [ "" ],
-      "address" : "001006e6"
-    } ],
-    "name" : "main"
-  }, {
-    "variables" : [ ],
-    "calls" : [ {
-      "funcName" : "_init",
-      "arguments" : [ "param_1" ],
-      "address" : "0010071c"
-    } ],
-    "name" : "__libc_csu_init"
-  }, {
-    "variables" : [ ],
-    "calls" : [ ],
-    "name" : "__libc_csu_fini"
-  }, {
-    "variables" : [ ],
-    "calls" : [ ],
-    "name" : "_fini"
-  } ]
+  long in_FS_OFFSET;
+  char local_1a [10];
+  long local_10;
+  
+  local_10 = *(long *)(in_FS_OFFSET + 0x28);
+  gets(local_1a);
+  if (local_10 != *(long *)(in_FS_OFFSET + 0x28)) {
+                    /* WARNING: Subroutine does not return */
+    __stack_chk_fail();
+  }
+  return 0;
 }
 ```
-

@@ -6,10 +6,11 @@ import os
 import sys
 import json
 
+import re
 CONFIG_DIR = os.path.expanduser("~/.config/github.com/cwgreene/dorat/")
 CONFIG_FILE = os.path.expanduser(CONFIG_DIR + "/dorat.json")
 
-MARK_PREFIX = "INFO  {}> "
+MARK_PREFIX = "^(INFO |ERROR) {}> (.*)"
 MARK_END = " (GhidraScript)  \n"
 
 def parse_output(proc, options):
@@ -20,8 +21,9 @@ def parse_output(proc, options):
         if options.show_raw:
             sys.stdout.write(line)
         elif state == "SCAN":
-            if line.startswith(mark_prefix):
-                line = line.replace(mark_prefix, "")
+            m = re.match(mark_prefix, line)
+            if m:
+                line = m.group(2) + "\n"
                 if not line.endswith(MARK_END):
                     sys.stdout.write(line)
                     state = "DUMP"
