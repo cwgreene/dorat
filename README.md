@@ -34,7 +34,7 @@ configuration options:
 List scripts
 ```
 $ dorat --list
-FindLibcCalls.java
+DecompileFunction.java
 FunctionCalls.java
 ```
 Execute a script on a specified binary.
