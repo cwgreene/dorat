@@ -4,9 +4,10 @@ import argparse
 import subprocess
 import os
 import sys
+import json
 
-GHIDRA_INSTALL_DIR=os.path.expanduser("~/installs/apps/ghidra_9.1.1_PUBLIC")
-GHIDRA_SCRIPTS_DIR=os.path.expanduser("~/projects/hacking/ghidrascripts")
+CONFIG_DIR = os.path.expanduser("~/.config/github.com/cwgreene/dorat/")
+CONFIG_FILE = os.path.expanduser(CONFIG_DIR + "/dorat.json")
 
 MARK_PREFIX = "INFO  {}> "
 MARK_END = " (GhidraScript)  \n"
@@ -39,6 +40,30 @@ def parse_output(proc, options):
     if options.show_stderr:
         sys.stdout.write(str(proc.stderr.read(), 'utf8'))
 
+def resolve_config():
+    if not os.path.exists(CONFIG_FILE):
+        print("Configuration json file not found in {}.".format(CONFIG_FILE))
+        print("Please run --config to configure your ghidra application and scripts directory")
+        sys.exit(1)
+    with open(CONFIG_FILE) as config_file:
+        return json.load(config_file)
+
+def configure_dorat():
+    if not os.path.exists(CONFIG_DIR):
+        os.makedirs(CONFIG_DIR)
+    print("Path to Ghidra Root Directory: ", end="")
+    path_ghidra = input()
+    path_ghidra = os.path.expanduser(path_ghidra)
+    print("Path to Ghidra Scripts Directory: ", end="")
+    path_scripts = input()
+    path_scripts = os.path.expanduser(path_scripts)
+    with open(CONFIG_FILE, "w") as json_file:
+        json.dump( {
+            "version": "1",
+            "GHIDRA_INSTALL_DIR":path_ghidra,
+            "GHIDRA_SCRIPTS_DIR":path_scripts
+        }, json_file)
+
 def main():
     parser = argparse.ArgumentParser()
     main_group = parser.add_argument_group(title="main group")
@@ -48,29 +73,39 @@ def main():
     main_group.add_argument("--show-raw", action="store_true", help="dump raw output")
     list_group = parser.add_argument_group(title="list command")
     list_group.add_argument("--list", action="store_true", help="list scripts")
+    list_group = parser.add_argument_group(title="configuration options")
+    list_group.add_argument("--config", action="store_true", help="configure dorat")
     options, args = parser.parse_known_args()
+
+    if options.config:
+        configure_dorat()
+        print("Dorat is configured. Enjoy!")
+        sys.exit(0)
+
+    config = resolve_config()
 
     if options.list:
         # TODO: do all of the standard locations
-        for afile in os.listdir(GHIDRA_SCRIPTS_DIR):
+        for afile in os.listdir(config["GHIDRA_SCRIPTS_DIR"]):
             if afile.endswith(".java"):
                 print(afile)
         return
+
     if not options.binary or not options.script:
         parser.print_help()
         print("--binary and --script are required when not used with list")
         return
 
-    proc  = subprocess.Popen(["{}/support/analyzeHeadless".format(GHIDRA_INSTALL_DIR),
+    proc  = subprocess.Popen(["{}/support/analyzeHeadless".format(config["GHIDRA_INSTALL_DIR"]),
             '/tmp/', 'ProjectName',
             '-import', options.binary,
             '-deleteProject',
-            '-scriptPath', GHIDRA_SCRIPTS_DIR,
+            '-scriptPath', config["GHIDRA_SCRIPTS_DIR"],
             '-postScript', options.script,
             ]+args,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
 
     parse_output(proc, options)
-    
+
 main()

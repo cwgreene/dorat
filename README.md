@@ -11,11 +11,11 @@ either environment variables or a file override.
 
 ```
 Usage:
-dorat BINARY SCRIPT
+dorat --binary BINARY --script SCRIPT
 ```
 
 Example
 
 ```
-dorat test_binary FindLibcCalls.java
+dorat test_binary ListFunctions.java
 ```
