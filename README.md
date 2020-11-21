@@ -6,9 +6,8 @@ make it simple to perform specific analyses on specific binaries. Also, here are
 
 # Usage
 
-As of the initial release, you'll need to edit the script and update the path to your
-Ghidra scripts directory and the Ghidra main directory. Future revisions will use
-either environment variables or a file override.
+You will need to run `dorat --config` on the first run to point `dorat` at your ghidra
+installation and scripts directory.
 
 ```
 usage: dorat.py [-h] [--binary BINARY] [--script SCRIPT] [--show-stderr]
