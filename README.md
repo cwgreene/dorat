@@ -14,12 +14,25 @@ Usage:
 dorat --binary BINARY --script SCRIPT
 ```
 
-Example
+# Examples:
 
+Execute a script on a specified binary.
+```
+dorat --binary test_binary --script ListFunctionCalls.java
+```
+
+Show all the docs!
+```
+dorat --help
+```
+
+Run first time configuration.
+```
+dorat --config
+```
+
+List scripts
 ```
 dorat --list
 ```
 
-```
-dorat --binary test_binary --script ListFunctionCalls.java
-```
