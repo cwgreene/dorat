@@ -77,7 +77,13 @@ def main():
     list_group.add_argument("--list", action="store_true", help="list scripts")
     list_group = parser.add_argument_group(title="configuration options")
     list_group.add_argument("--config", action="store_true", help="configure dorat")
+    list_group.add_argument("--config-info", action="store_true", help="show dorat configuration in {}".format(CONFIG_FILE))
     options, args = parser.parse_known_args()
+
+    if options.config_info:
+        with open(CONFIG_FILE) as configfile:
+            print(configfile.read())
+        sys.exit(0)
 
     if options.config:
         configure_dorat()
