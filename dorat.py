@@ -108,6 +108,8 @@ def main():
             '/tmp/', 'ProjectName',
             '-import', options.binary,
             '-deleteProject',
+            # TODO: make this part of a analysis/script group.
+            '-preScript', 'ResolveX86orX64LinuxSyscallsScript.java',
             '-scriptPath', config["GHIDRA_SCRIPTS_DIR"],
             '-postScript', options.script,
             ]+args,
