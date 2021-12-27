@@ -4,6 +4,9 @@ Dorat is a command line interface, and workflow enabler, for Ghidra Headless. It
 make it simple to perform specific analyses on specific binaries. Also, here are some useful
 [scripts](https://github.com/cwgreene/ghidrascripts) that can be used with dorat.
 
+# install
+pip3 install git+git@github.com/cwgreene/dorat
+
 # Usage
 
 You will need to run `dorat --config` on the first run to point `dorat` at your ghidra

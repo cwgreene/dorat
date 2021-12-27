@@ -118,4 +118,5 @@ def main():
 
     parse_output(proc, options)
 
-main()
+if __name__ == "__main__":
+    main()
