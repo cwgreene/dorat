@@ -8,6 +8,7 @@ setup(name='dorat',
       author='cwgreene',
       author_email='archgoon+dorat@gmail.com',
       url='',
+      install_requires=["requests"],
       packages=["dorat"],
       scripts=["bin/dorat"]
      )
