@@ -5,7 +5,7 @@ make it simple to perform specific analyses on specific binaries. Also, here are
 [scripts](https://github.com/cwgreene/ghidrascripts) that can be used with dorat.
 
 # install
-pip3 install git+git@github.com/cwgreene/dorat
+pip3 install git+https://github.com/cwgreene/dorat.git
 
 # Usage
 
