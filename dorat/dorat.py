@@ -58,12 +58,13 @@ def resolve_config():
     with open(CONFIG_FILE) as config_file:
         return json.load(config_file)
 
-def write_config_file(path_ghidra, path_scripts):
+def write_config_file(path_ghidra, path_scripts, java_home):
     with open(CONFIG_FILE, "w") as json_file:
         json.dump( {
             "version": "1",
             "GHIDRA_INSTALL_DIR":path_ghidra,
-            "GHIDRA_SCRIPTS_DIR":path_scripts
+            "GHIDRA_SCRIPTS_DIR":path_scripts,
+            "JAVA_HOME": java_home
         }, json_file)
 
 def configure_dorat():
@@ -75,7 +76,10 @@ def configure_dorat():
     print("Path to Ghidra Scripts Directory: ", end="")
     path_scripts = input()
     path_scripts = os.path.expanduser(path_scripts)
-    write_config_file(path_ghidra, path_scripts)
+    print("Path to Java bin directory: ", end="")
+    java_home = input()
+    java_home = os.path.expanduser(java_home)
+    write_config_file(path_ghidra, path_scripts, java_home)
 def is_dorat_configured():
     if not os.path.exists(CONFIG_FILE):
         return False
@@ -182,6 +186,11 @@ def main():
         print("--binary and --script are required when not used with list")
         return
 
+    # Ensure that expected version of java is used
+    path = config["JAVA_HOME"] + ":" + os.environ["PATH"]
+    envvars = os.environ.copy()
+    envvars["PATH"] = path
+
     proc  = subprocess.Popen(["{}/support/analyzeHeadless".format(config["GHIDRA_INSTALL_DIR"]),
             '/tmp/', 'ProjectName',
             '-import', options.binary,
@@ -191,6 +200,7 @@ def main():
             '-scriptPath', config["GHIDRA_SCRIPTS_DIR"],
             '-postScript', options.script,
             ]+args,
+            env=envvars,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
 
