@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='dorat',
       version='1.0',
@@ -9,6 +9,6 @@ setup(name='dorat',
       author_email='archgoon+dorat@gmail.com',
       url='',
       install_requires=["requests"],
-      packages=["dorat"],
+      packages=find_packages(),
       scripts=["bin/dorat"]
      )
