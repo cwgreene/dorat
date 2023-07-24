@@ -8,8 +8,6 @@ import zipfile
 
 from tempfile import TemporaryDirectory
 
-from . import ghidra
-
 CONFIG_DIR = os.path.expanduser("~/.config/github.com/cwgreene/dorat/")
 CONFIG_FILE = os.path.expanduser(CONFIG_DIR + "/dorat.json")
 
