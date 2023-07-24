@@ -9,8 +9,6 @@ import json
 import requests
 import zipfile
 
-from tempfile import TemporaryDirectory
-
 import re
 
 from . import config as configuration
@@ -87,7 +85,7 @@ def main():
                 options.ghidra_install_dir))
         options.ghidra_scripts_install_dir = os.path.realpath(os.path.expanduser(
                 options.ghidra_scripts_install_dir))
-        config.install_ghidra(options)
+        configuration.install_ghidra(options)
         sys.exit(0)
     config = configuration.resolve_config()
 

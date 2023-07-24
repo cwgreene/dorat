@@ -4,6 +4,10 @@ import requests
 import re
 import sys
 
+import zipfile
+
+from tempfile import TemporaryDirectory
+
 CONFIG_DIR = os.path.expanduser("~/.config/github.com/cwgreene/dorat/")
 CONFIG_FILE = os.path.expanduser(CONFIG_DIR + "/dorat.json")
 
@@ -41,8 +45,9 @@ def get_directory(prompt, default):
 def which(cmd):
     path = os.environ["PATH"]
     for path in path.split(":"):
-        if os.path.exists(f"{path}/{cmd})"):
-            return os.path.realpath(path)
+        p = f"{path}/{cmd}"
+        if os.path.exists(p):
+            return os.path.realpath(p)
 
 def guess_java_path():
     java_path = which("java")
@@ -98,7 +103,7 @@ def is_dorat_configured():
         return False
     with open(CONFIG_FILE) as config_file:
         data = config_file.read()
-        js = json.load(data)
+        js = json.loads(data)
         if "GHIDRA_INSTALL_DIR" in js and "GHIDRA_SCRIPTS_DIR" in js:
             return True
     return False
@@ -125,9 +130,11 @@ def clone_ghidrascripts(options):
 
 def run_ghidrascripts_install(options):
     import subprocess
-    return subprocess.run(["/bin/sh", "./install.sh", 
+    result =  subprocess.run(["/bin/sh", "./install.sh", 
         f"{options.ghidra_install_dir}/{GHIDRA_VERSION}"],
         cwd=f"{options.ghidra_scripts_install_dir}")
+    if result.returncode != 0:
+        raise Exception("Failed to run git clone")
 
 def install_ghidrascripts(options):
     clone_ghidrascripts(options)
@@ -137,10 +144,11 @@ def install_ghidra(options):
     if options.force == False and is_dorat_configured():
         print("Ghidra is installed and dorat is configured")
         return
+    java_home = get_directory("Path to Java Installation", guess_java_path())
     download_ghidra(options)
     install_ghidrascripts(options)
     write_config_file(
         f"{options.ghidra_install_dir}/{GHIDRA_VERSION}",
-        options.ghidra_scripts_install_dir)
+        options.ghidra_scripts_install_dir, java_home)
 
 
