@@ -1,4 +1,12 @@
+import os
+import json
 import requests
+import re
+import sys
+
+import zipfile
+
+from tempfile import TemporaryDirectory
 
 GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.2_build/ghidra_10.3.2_PUBLIC_20230711.zip"
 GHIDRA_ZIP_FILE=GHIDRA_URL.split("/")[-1] # ghidra_10.3.2_PUBLIC_20230711.zip
