@@ -45,7 +45,7 @@ def parse_output(proc, options):
     if options.show_stderr:
         sys.stdout.write(str(proc.stderr.read(), 'utf8'))
 
-def main():
+def main(argv):
     parser = argparse.ArgumentParser()
     main_group = parser.add_argument_group(title="main group")
     main_group.add_argument("--binary", help="REQUIRED: target binary")
@@ -62,7 +62,7 @@ def main():
     install_group.add_argument("--ghidra-install-dir")
     install_group.add_argument("--ghidra-scripts-install-dir")
     install_group.add_argument("--force", action="store_true", default=False)
-    options, args = parser.parse_known_args()
+    options, args = parser.parse_known_args(argv)
 
     if options.config_info:
         with open(configuration.CONFIG_FILE) as configfile:
@@ -122,4 +122,5 @@ def main():
     parse_output(proc, options)
 
 if __name__ == "__main__":
-    main()
+    import sys
+    main(sys.argv)
