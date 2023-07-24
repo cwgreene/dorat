@@ -79,7 +79,7 @@ def main(argv):
             raise(Exception("Need --ghidra-install-dir"))
         if not options.ghidra_scripts_install_dir:
             raise(Exception("Need --ghidra-scripts-install-dir"))
-        if os.path.exists(options.ghidra_scripts_install_dir + "/ghidrascripts") and not options.force:
+        if os.path.exists(options.ghidra_scripts_install_dir) and not options.force:
             raise(Exception(f"{options.ghidra_scripts_install_dir} already exists"))
         options.ghidra_install_dir = os.path.realpath(os.path.expanduser(
                 options.ghidra_install_dir))
