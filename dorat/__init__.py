@@ -1,1 +1,1 @@
-from .dorat import *
+from .core import *

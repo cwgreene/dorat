@@ -2,6 +2,14 @@ import os
 import json
 import requests
 import re
+import sys
+
+CONFIG_DIR = os.path.expanduser("~/.config/github.com/cwgreene/dorat/")
+CONFIG_FILE = os.path.expanduser(CONFIG_DIR + "/dorat.json")
+
+GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.2_build/ghidra_10.3.2_PUBLIC_20230711.zip"
+GHIDRA_ZIP_FILE=GHIDRA_URL.split("/")[-1] # ghidra_10.3.2_PUBLIC_20230711.zip
+GHIDRA_VERSION=GHIDRA_URL.split("/")[-1].rsplit("_",1)[0] # "ghidra_10.3.2_PUBLIC"
 
 def resolve_config():
     if not os.path.exists(CONFIG_FILE):

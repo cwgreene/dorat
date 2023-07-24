@@ -13,14 +13,7 @@ from tempfile import TemporaryDirectory
 
 import re
 
-from . import config
-
-CONFIG_DIR = os.path.expanduser("~/.config/github.com/cwgreene/dorat/")
-CONFIG_FILE = os.path.expanduser(CONFIG_DIR + "/dorat.json")
-
-GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.2_build/ghidra_10.3.2_PUBLIC_20230711.zip"
-GHIDRA_ZIP_FILE=GHIDRA_URL.split("/")[-1] # ghidra_10.3.2_PUBLIC_20230711.zip
-GHIDRA_VERSION=GHIDRA_URL.split("/")[-1].rsplit("_",1)[0] # "ghidra_10.3.2_PUBLIC"
+from . import config as configuration
 
 MARK_PREFIX = "^(INFO |ERROR) {}> (.*)"
 MARK_END = " (GhidraScript)  \n"
@@ -65,7 +58,7 @@ def main():
     list_group.add_argument("--list", action="store_true", help="list scripts")
     config_group = parser.add_argument_group(title="configuration options")
     config_group.add_argument("--config", action="store_true", help="configure dorat")
-    config_group.add_argument("--config-info", action="store_true", help="show dorat configuration in {}".format(CONFIG_FILE))
+    config_group.add_argument("--config-info", action="store_true", help="show dorat configuration in {}".format(configuration.CONFIG_FILE))
     install_group = parser.add_argument_group("title=install ghidra")
     install_group.add_argument("--install-ghidra", action="store_true")
     install_group.add_argument("--ghidra-install-dir")
@@ -74,12 +67,12 @@ def main():
     options, args = parser.parse_known_args()
 
     if options.config_info:
-        with open(CONFIG_FILE) as configfile:
+        with open(configuration.CONFIG_FILE) as configfile:
             print(configfile.read())
         sys.exit(0)
 
     if options.config:
-        config.configure_dorat()
+        configuration.configure_dorat()
         print("Dorat is configured. Enjoy!")
         sys.exit(0)
 
@@ -96,7 +89,7 @@ def main():
                 options.ghidra_scripts_install_dir))
         config.install_ghidra(options)
         sys.exit(0)
-    config = resolve_config()
+    config = configuration.resolve_config()
 
     if options.list:
         # TODO: do all of the standard locations
