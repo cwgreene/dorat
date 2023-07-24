@@ -47,7 +47,7 @@ def parse_output(proc, script):
     stderr = proc.stderr.read()
     return stdout, raw_stdout, stderr
 
-def dorat(script, binary, config):
+def dorat(script, binary, args, config):
     # Ensure that expected version of java is used
     path = config["JAVA_HOME"] + ":" + os.environ["PATH"]
     envvars = os.environ.copy()
@@ -66,7 +66,7 @@ def dorat(script, binary, config):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
 
-    parse_output(proc, script)
+    return parse_output(proc, script)
 
 def main(argv):
     parser = argparse.ArgumentParser()
@@ -129,13 +129,13 @@ def main(argv):
         print("--binary and --script are required when not used with list")
         return
 
-    stdout, raw_stdout, stderr = dorat(script, binary, config)
+    stdout, raw_stdout, stderr = dorat(options.script, options.binary, args, config)
     if options.show_raw:
         sys.stdout.write(raw_stdout)
     else:
         sys.stdout.write(stdout)
     if options.show_stderr:
-        sys.stdout.write(stderr)
+        sys.stdout.buffer.write(stderr)
 
 if __name__ == "__main__":
     import sys
