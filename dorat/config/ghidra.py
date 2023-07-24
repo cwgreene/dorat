@@ -25,8 +25,10 @@ def download_ghidra(options : GhidraOptions):
                 for chunk in r.iter_content(chunk_size=8192*1024):
                     tmpzip.write(chunk)
             print("Downloaded Ghidra, unzipping")
-            with zipfile.ZipFile(zipfilepath) as zf:
-                zf.extractall(options.ghidra_install_dir)
+            import subprocess
+            result = subprocess.run(["unzip", zipfilepath, "-d", options.ghidra_install_dir])
+            if result.returncode != 0:
+                raise("Failed to unzip ghidra zipfile")
             print(f"Unzipped Ghidra into {options.ghidra_install_dir}")
 
 def clone_ghidrascripts(options : GhidraOptions):
