@@ -74,6 +74,8 @@ def find_ghidra_installs(start_dir):
     results = []
     matcher = MatchAction(r"ghidra_[0-9]*\.[0-9]*\.[0-9]*_PUBLIC", lambda p: [])
     for ghidra_install in dirwalk(stard_dir, action=matcher):
+        pass
+    return []
 
 def configure_dorat():
     if not os.path.exists(CONFIG_DIR):

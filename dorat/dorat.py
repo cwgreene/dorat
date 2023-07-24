@@ -13,7 +13,7 @@ from tempfile import TemporaryDirectory
 
 import re
 
-import config
+from . import config
 
 CONFIG_DIR = os.path.expanduser("~/.config/github.com/cwgreene/dorat/")
 CONFIG_FILE = os.path.expanduser(CONFIG_DIR + "/dorat.json")
