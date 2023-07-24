@@ -1,4 +1,4 @@
 #!/bin/python3
 import dorat
 import sys
-dorat.main(sys.argv)
+dorat.main(sys.argv[1:])
