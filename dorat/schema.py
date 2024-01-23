@@ -1,24 +1,26 @@
+from typing import List
+
 class DoratVariable:
     def __init__(self, js):
-        self.name = js["name"]
-        self.size = js["size"]
-        self.stackOffset = js["stackOffest"]
+        self.name : str = js["name"]
+        self.size : int = js["size"]
+        self.stackOffset : int = js["stackOffest"]
 
 class DoratCall:
     def __init__(self, js):
         self.funcName : str = js["funcName"]
         self.address : int = int(js["address"], 16)
-        self.arguments :str = [s for s in js["arguments"]]
+        self.arguments : List[str] = [s for s in js["arguments"]]
 
 class DoratFunction:
     def __init__(self, js):
-        self.name = js["name"]
-        self.address = int(js["address"], 16)
-        self.arguments = js["arguments"]    # TODO: wrap this somehow
+        self.name : str = js["name"]
+        self.address : int = int(js["address"], 16)
+        self.arguments : List[str] = js["arguments"]    # TODO: wrap this somehow
         self.exitAddresses = [int(addr, 16) for addr in js["exitAddresses"]]
         self.variables = [DoratVariable(var) for var in js["variables"]]
         self.calls = [DoratCall(call) for call in js["calls"]]
-        self.functionBytes = js["functionBytes"]
+        self.functionBytes : str = js["functionBytes"]
 
 class DoratProgram:
     def __init__(self, js):
