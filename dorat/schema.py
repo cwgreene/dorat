@@ -4,7 +4,7 @@ class DoratVariable:
     def __init__(self, js):
         self.name : str = js["name"]
         self.size : int = js["size"]
-        self.stackOffset : int = js["stackOffest"]
+        self.stackOffset : int = js["stackOffset"]
 
 class DoratCall:
     def __init__(self, js):
