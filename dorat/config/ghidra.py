@@ -6,6 +6,8 @@ import sys
 
 import zipfile
 
+from .core import is_dorat_configured
+
 from tempfile import TemporaryDirectory
 
 GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.2_build/ghidra_10.3.2_PUBLIC_20230711.zip"
