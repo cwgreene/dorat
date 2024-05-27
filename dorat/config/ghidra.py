@@ -10,9 +10,9 @@ from .core import is_dorat_configured
 
 from tempfile import TemporaryDirectory
 
-GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.2_build/ghidra_10.3.2_PUBLIC_20230711.zip"
-GHIDRA_ZIP_FILE=GHIDRA_URL.split("/")[-1] # ghidra_10.3.2_PUBLIC_20230711.zip
-GHIDRA_VERSION=GHIDRA_URL.split("/")[-1].rsplit("_",1)[0] # "ghidra_10.3.2_PUBLIC"
+GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.0.3_build/ghidra_11.0.3_PUBLIC_20240410"
+GHIDRA_ZIP_FILE=GHIDRA_URL.split("/")[-1] # ghidra_11.0.3_PUBLIC_20240410
+GHIDRA_VERSION=GHIDRA_URL.split("/")[-1].rsplit("_",1)[0] # "ghidra_11.0.3_PUBLIC"
 
 from collections import namedtuple
 GhidraOptions = namedtuple("GhidraOptions", ["force", "ghidra_install_dir", "ghidra_scripts_install_dir"])
