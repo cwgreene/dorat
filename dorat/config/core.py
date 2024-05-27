@@ -7,9 +7,8 @@ import sys
 import zipfile
 
 from tempfile import TemporaryDirectory
-
-CONFIG_DIR = os.path.expanduser("~/.config/github.com/cwgreene/dorat/")
-CONFIG_FILE = os.path.expanduser(CONFIG_DIR + "/dorat.json")
+from . import ghidra as ghidra_config
+from .shared import CONFIG_DIR, CONFIG_FILE
 
 def resolve_config(config_file_path=CONFIG_FILE):
     if not os.path.exists(config_file_path):
@@ -17,15 +16,19 @@ def resolve_config(config_file_path=CONFIG_FILE):
         print("Please run --config to configure your ghidra application and scripts directory")
         print("Or run --install-ghidra to install ghidra and the ghidrascripts into the current directory")
         sys.exit(1)
+    return _load_config(config_file_path)
+
+def _load_config(config_file_path=CONFIG_FILE):
     with open(config_file_path) as config_file:
         return json.load(config_file)
 
-def write_config_file(path_ghidra, path_scripts, java_home, config_file_path=CONFIG_FILE):
+def write_config_file(path_ghidra, path_scripts, ghidra_version, java_home, config_file_path=CONFIG_FILE):
     with open(config_file_path, "w") as json_file:
         json.dump( {
             "version": "1",
             "GHIDRA_INSTALL_DIR":path_ghidra,
             "GHIDRA_SCRIPTS_DIR":path_scripts,
+            "GHIDRA_VERSION":ghidra_version,
             "JAVA_HOME": java_home
         }, json_file)
 
@@ -37,6 +40,13 @@ def get_directory(prompt, default):
     var_subbed_path = value.format(**os.environ)
     resolved_value = os.path.realpath(os.path.expanduser(var_subbed_path))
     return resolved_value
+
+def get_value(prompt, default):
+    print(prompt, f"({default}): ", end="")
+    value = input()
+    if value == "":
+        return default
+    return value
 
 def which(cmd):
     path = os.environ["PATH"]
@@ -85,18 +95,18 @@ def configure_dorat(config_file_path=None):
     dirs = os.path.dirname(config_file_path)
     if not os.path.exists(dirs):
         os.makedirs(dirs)
-    path_ghidra = get_directory("Path to Ghidra Root Directory", os.path.expanduser("~/"))
-    path_scripts = get_directory("Path to Ghidra Scripts Directory", os.path.expanduser("~/"))
-    java_home = get_directory("Path to Java Installation", guess_java_path())
-    write_config_file(path_ghidra, path_scripts, java_home, config_file_path=config_file_path)
+    cur_config = {}
+    if os.path.exists(config_file_path):
+        # try to load existing
+        cur_config = _load_config()
+    ghidra_version = get_value("Ghidra Version",
+        cur_config.get("GHIDRA_VERSION", ghidra_config.GHIDRA_VERSION))
+    path_ghidra = get_directory("Path to Ghidra Root Directory",
+        cur_config.get("GHIDRA_INSTALL_DIR", os.path.expanduser("~/")))
+    path_scripts = get_directory("Path to Ghidra Scripts Directory",
+        cur_config.get("GHIDRA_SCRIPTS_DIR", os.path.expanduser("~/")))
+    java_home = get_directory("Path to Java Installation",
+        cur_config.get("JAVA_HOME", guess_java_path()))
+    write_config_file(path_ghidra, path_scripts, ghidra_version, java_home, config_file_path=config_file_path)
 
-def is_dorat_configured(config_file_path=CONFIG_FILE):
-    if not os.path.exists(config_file_path):
-        return False
-    with open(config_file_path) as config_file:
-        data = config_file.read()
-        js = json.loads(data)
-        if "GHIDRA_INSTALL_DIR" in js and "GHIDRA_SCRIPTS_DIR" in js:
-            return True
-    return False
 

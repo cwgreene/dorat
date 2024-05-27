@@ -24,11 +24,17 @@ def test_install(ghidra_install_dir):
     # cant easily test that ghidrascripts is working without dorat.
     # so this is basically the bare minimum we can validate.
     assert os.path.exists(f"{tempdir}/ghidrascripts/install.sh")
-    assert os.path.exists(f"{tempdir}/ghidrascripts/DecompileFunction.java")
+    assert os.path.exists(f"{tempdir}/ghidrascripts/scripts/java/DecompileFunction.java")
 
 def test_decompile(ghidra_install_dir):
     java_home = dorat.configuration.guess_java_path()
-    config = {"JAVA_HOME": java_home, "GHIDRA_INSTALL_DIR": ghidra_install_dir+"/"+dorat.configuration.GHIDRA_VERSION, "GHIDRA_SCRIPTS_DIR": ghidra_install_dir + "/" + "ghidrascripts"}
+    config = {
+        "GHIDRA_VERSION": dorat.configuration.GHIDRA_VERSION,
+        "JAVA_HOME": java_home,
+        "GHIDRA_INSTALL_DIR": ghidra_install_dir,
+        "GHIDRA_SCRIPTS_DIR": ghidra_install_dir + "/" + "ghidrascripts"
+    }
     stdout, raw_stdout, stderr = dorat.dorat("DecompileFunction.java", "./data/test", ["main"], config)
+    print("stdout", stdout)
     assert "Hello world" in stdout
 

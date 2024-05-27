@@ -12,6 +12,7 @@ import zipfile
 import re
 
 from . import config as configuration
+from .config import ghidra as ghidra_config
 
 MARK_PREFIX = "^(INFO |ERROR) {}> (.*)"
 MARK_END = " (GhidraScript)  \n"
@@ -53,15 +54,18 @@ def dorat(script, binary, args, config):
     envvars = os.environ.copy()
     envvars["PATH"] = path
 
-    proc  = subprocess.Popen(["{}/support/analyzeHeadless".format(config["GHIDRA_INSTALL_DIR"]),
+    full_path = f"{config['GHIDRA_INSTALL_DIR']}/{config['GHIDRA_VERSION']}"
+    full_script_path = config["GHIDRA_SCRIPTS_DIR"]+"/scripts/java"
+    cmdline = [f"{full_path}/support/analyzeHeadless",
             '/tmp/', 'ProjectName',
             '-import', binary,
             '-deleteProject',
             # TODO: make this part of a analysis/script group.
             '-preScript', 'ResolveX86orX64LinuxSyscallsScript.java',
-            '-scriptPath', config["GHIDRA_SCRIPTS_DIR"],
+            '-scriptPath', full_script_path,
             '-postScript', script,
-            ]+args,
+            ]+args
+    proc  = subprocess.Popen(cmdline,
             env=envvars,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
@@ -81,6 +85,7 @@ def main(argv):
     list_group.add_argument("--list", action="store_true", help="list scripts")
 
     config_group = parser.add_argument_group(title="configuration options")
+    config_group.add_argument("--version", action="store_true", help="show ghidra version info")
     config_group.add_argument("--config", action="store_true", help="configure dorat")
     config_group.add_argument("--config-info", action="store_true", help="show dorat configuration in {}".format(configuration.CONFIG_FILE))
 
@@ -91,6 +96,11 @@ def main(argv):
     install_group.add_argument("--force", action="store_true", default=False)
 
     options, args = parser.parse_known_args(argv)
+
+    if options.version:
+        print(ghidra_config.GHIDRA_VERSION)
+        print(ghidra_config.GHIDRA_URL)
+        sys.exit(0)
 
     if options.config_info:
         with open(configuration.CONFIG_FILE) as configfile:

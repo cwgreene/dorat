@@ -6,7 +6,7 @@ import sys
 
 import zipfile
 
-from .core import is_dorat_configured
+from .shared import is_dorat_configured
 
 from tempfile import TemporaryDirectory
 
@@ -19,10 +19,10 @@ GhidraOptions = namedtuple("GhidraOptions", ["force", "ghidra_install_dir", "ghi
 
 def download_ghidra(options : GhidraOptions):
     print("Downloading Ghidra")
-    with requests.get(f"https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.2_build/ghidra_10.3.2_PUBLIC_20230711.zip", stream=True) as r:
+    with requests.get(f"{GHIDRA_URL}", stream=True) as r:
         r.raise_for_status()
         with TemporaryDirectory() as tmpdir:
-            zipfilepath = f"{tmpdir}/{GHIDRA_ZIP_FILE}.zip"
+            zipfilepath = f"{tmpdir}/{GHIDRA_ZIP_FILE}"
             with open(zipfilepath, 'wb') as tmpzip:
                 for chunk in r.iter_content(chunk_size=8192*1024):
                     tmpzip.write(chunk)
