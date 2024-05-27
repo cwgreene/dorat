@@ -119,7 +119,7 @@ def main(argv):
 
     if options.list:
         # TODO: do all of the standard locations
-        for afile in os.listdir(config["GHIDRA_SCRIPTS_DIR"]):
+        for afile in os.listdir(config["GHIDRA_SCRIPTS_DIR"]+"/scripts/java"):
             if afile.endswith(".java"):
                 print(afile)
         return
