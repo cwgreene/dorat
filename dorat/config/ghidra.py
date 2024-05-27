@@ -10,7 +10,7 @@ from .core import is_dorat_configured
 
 from tempfile import TemporaryDirectory
 
-GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.0.3_build/ghidra_11.0.3_PUBLIC_20240410"
+GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.0.3_build/ghidra_11.0.3_PUBLIC_20240410.zip"
 GHIDRA_ZIP_FILE=GHIDRA_URL.split("/")[-1] # ghidra_11.0.3_PUBLIC_20240410
 GHIDRA_VERSION=GHIDRA_URL.split("/")[-1].rsplit("_",1)[0] # "ghidra_11.0.3_PUBLIC"
 
