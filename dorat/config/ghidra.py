@@ -57,11 +57,3 @@ def install_ghidra(options : GhidraOptions):
         return
     download_ghidra(options)
     install_ghidrascripts(options)
-
-def find_ghidra_installs(start_dir : GhidraOptions):
-    results = []
-    matcher = MatchAction(r"ghidra_[0-9]*\.[0-9]*\.[0-9]*_PUBLIC", lambda p: [])
-    for ghidra_install in dirwalk(stard_dir, action=matcher):
-        pass
-    return []
-

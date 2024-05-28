@@ -8,29 +8,75 @@ import zipfile
 
 from tempfile import TemporaryDirectory
 from . import ghidra as ghidra_config
-from .shared import CONFIG_DIR, CONFIG_FILE
+from .shared import CONFIG_DIR, CONFIG_FILE, CONFIG_VERSION
 
-def resolve_config(config_file_path=CONFIG_FILE):
+from enum import Enum
+
+# Exceptions
+class OldVersionException(Exception):
+    pass
+
+class ConfigFields(str, Enum):
+    name = "name"
+    GHIDRA_INSTALL_DIR = "GHIDRA_INSTALL_DIR"
+    GHIDRA_SCRIPTS_DIR = "GHIDRA_SCRIPTS_DIR"
+    GHIDRA_VERSION = "GHIDRA_VERSION"
+    JAVA_HOME = "JAVA_HOME"
+
+def resolve_config(config_file_path=CONFIG_FILE, group="default"):
     if not os.path.exists(config_file_path):
         print("Configuration json file not found in {}.".format(config_file_path))
         print("Please run --config to configure your ghidra application and scripts directory")
         print("Or run --install-ghidra to install ghidra and the ghidrascripts into the current directory")
         sys.exit(1)
-    return _load_config(config_file_path)
+    try:
+        return find_group(load_config(config_file_path), group)
+    except OldVersionException as old_version:
+        print(f"{old_version}")
+        print(f"Config version of {config_file_path} is out of date")
+        print("Run '--config' to update")
+        sys.exit(1)
 
-def _load_config(config_file_path=CONFIG_FILE):
+def minimal_config():
+    return {
+        "version": CONFIG_VERSION,
+        "groups": []
+    }
+
+def find_group(config, name):
+    for _, group in enumerate(config["groups"]):
+        if group["name"] == name:
+            return group
+    return None
+
+def update_group(config, name, updated_group):
+    for i, group in enumerate(config["groups"]):
+        if group["name"] == name:
+            break
+    else:
+        config["groups"].append(updated_group)
+        return
+    config["groups"][i] = updated_group
+
+def load_config(config_file_path=CONFIG_FILE):
+    if not os.path.exists(config_file_path):
+        return minimal_config()
     with open(config_file_path) as config_file:
-        return json.load(config_file)
+        js = json.load(config_file)
+        if (version:=js["version"]) != CONFIG_VERSION:
+            raise OldVersionException(f"Configuration file version '{version}' is not '{CONFIG_VERSION}'")
 
-def write_config_file(path_ghidra, path_scripts, ghidra_version, java_home, config_file_path=CONFIG_FILE):
+def write_group_to_config(group, path_ghidra, path_scripts, ghidra_version, java_home, config_file_path=CONFIG_FILE):
+    config = load_config(config_file_path)
     with open(config_file_path, "w") as json_file:
-        json.dump( {
-            "version": "1",
-            "GHIDRA_INSTALL_DIR":path_ghidra,
-            "GHIDRA_SCRIPTS_DIR":path_scripts,
-            "GHIDRA_VERSION":ghidra_version,
-            "JAVA_HOME": java_home
-        }, json_file)
+        js = json.dumps({
+            ConfigFields.name: group,
+            ConfigFields.GHIDRA_INSTALL_DIR: path_ghidra,
+            ConfigFields.GHIDRA_SCRIPTS_DIR: path_scripts,
+            ConfigFields.GHIDRA_VERSION: ghidra_version,
+            ConfigFields.JAVA_HOME: java_home
+        })
+        update_group(config, group, js)
 
 def get_directory(prompt, default):
     print(prompt, f"({default}): ", end="")
@@ -61,22 +107,6 @@ def guess_java_path():
         return "JAVA NOT INSTALLED"
     return java_path
 
-class MatchAction():
-    def __init__(self, matcher, action):
-        if type(matcher) == str:
-            self.matcher = re.complie(matcher)
-        else:
-            self.matcher = matcher
-        self.action = action  
-        self.matches = []
-    def match(self, path):
-        if self.matcher.match(path.rsplit("/")[-1]):
-            matches.append(path)
-            return True
-        return False
-    def action(self, path):
-        return action(path)
-
 def dirwalk(start_dir, max_depth=None, cur_depth=0, exclude=[".git"],action=None):
     for file in os.listdir(start_dir):
         path = start_dir + "/" + file
@@ -98,7 +128,7 @@ def configure_dorat(config_file_path=None):
     cur_config = {}
     if os.path.exists(config_file_path):
         # try to load existing
-        cur_config = _load_config()
+        cur_config = load_config(config_file_path)
     ghidra_version = get_value("Ghidra Version",
         cur_config.get("GHIDRA_VERSION", ghidra_config.GHIDRA_VERSION))
     path_ghidra = get_directory("Path to Ghidra Root Directory",
@@ -107,6 +137,6 @@ def configure_dorat(config_file_path=None):
         cur_config.get("GHIDRA_SCRIPTS_DIR", os.path.expanduser("~/")))
     java_home = get_directory("Path to Java Installation",
         cur_config.get("JAVA_HOME", guess_java_path()))
-    write_config_file(path_ghidra, path_scripts, ghidra_version, java_home, config_file_path=config_file_path)
+    write_group_to_config("default", path_ghidra, path_scripts, ghidra_version, java_home, config_file_path=config_file_path)
 
 

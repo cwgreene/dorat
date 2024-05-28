@@ -13,6 +13,7 @@ import re
 
 from . import config as configuration
 from .config import ghidra as ghidra_config
+from .config import ConfigFields as CF
 
 MARK_PREFIX = "^(INFO |ERROR) {}> (.*)"
 MARK_END = " (GhidraScript)  \n"
@@ -54,8 +55,8 @@ def dorat(script, binary, args, config):
     envvars = os.environ.copy()
     envvars["PATH"] = path
 
-    full_path = f"{config['GHIDRA_INSTALL_DIR']}/{config['GHIDRA_VERSION']}"
-    full_script_path = config["GHIDRA_SCRIPTS_DIR"]+"/scripts/java"
+    full_path = f"{config[CF.GHIDRA_INSTALL_DIR]}/{config[CF.GHIDRA_VERSION]}"
+    full_script_path = config[CF.GHIDRA_SCRIPTS_DIR]+"/scripts/java"
     cmdline = [f"{full_path}/support/analyzeHeadless",
             '/tmp/', 'ProjectName',
             '-import', binary,

@@ -2,6 +2,7 @@ import os
 
 CONFIG_DIR = os.path.expanduser("~/.config/github.com/cwgreene/dorat/")
 CONFIG_FILE = os.path.expanduser(CONFIG_DIR + "/dorat.json")
+CONFIG_VERSION = "2"
 
 def is_dorat_configured(config_file_path=CONFIG_FILE):
     if not os.path.exists(config_file_path):
