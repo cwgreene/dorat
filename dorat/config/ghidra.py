@@ -35,9 +35,13 @@ def download_ghidra(options : GhidraOptions):
 
 def clone_ghidrascripts(options : GhidraOptions):
     import subprocess
-    return subprocess.run(["git", "clone",
+    subprocess.run(["git", "clone",
             "https://github.com/cwgreene/ghidrascripts",
             options.ghidra_scripts_install_dir])
+    # Currently we're compatible with 'ac90be33be86e6811741c528c4f4fa55eefb1139'    
+    # TODO: Move cloning this out of dorat. Dorat should be target agnostic
+    # we should only clone a specific set of scripts for testing purposes.
+    return subprocess.run(["git", "checkout", "-C", options.ghidra_scripts_install_dir, "ac90be33be86e6811741c528c4f4fa55eefb1139"])
 
 def run_ghidrascripts_install(options : GhidraOptions):
     import subprocess
