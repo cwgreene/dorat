@@ -10,9 +10,9 @@ from .shared import is_dorat_configured
 
 from tempfile import TemporaryDirectory
 
-GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.0.3_build/ghidra_11.0.3_PUBLIC_20240410.zip"
-GHIDRA_ZIP_FILE=GHIDRA_URL.split("/")[-1] # ghidra_11.0.3_PUBLIC_20240410
-GHIDRA_VERSION=GHIDRA_URL.split("/")[-1].rsplit("_",1)[0] # "ghidra_11.0.3_PUBLIC"
+GHIDRA_URL="https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.2_build/ghidra_10.3.2_PUBLIC_20230711.zip"
+GHIDRA_ZIP_FILE=GHIDRA_URL.split("/")[-1] # ghidra_10.3.2_PUBLIC_20230711.zip
+GHIDRA_VERSION=GHIDRA_URL.split("/")[-1].rsplit("_",1)[0] # "ghidra_10.3.2_PUBLIC"
 
 from collections import namedtuple
 GhidraOptions = namedtuple("GhidraOptions", ["force", "ghidra_install_dir", "ghidra_scripts_install_dir"])
@@ -41,7 +41,7 @@ def clone_ghidrascripts(options : GhidraOptions):
     # Currently we're compatible with 'ac90be33be86e6811741c528c4f4fa55eefb1139'    
     # TODO: Move cloning this out of dorat. Dorat should be target agnostic
     # we should only clone a specific set of scripts for testing purposes.
-    return subprocess.run(["git", "checkout", "-C", options.ghidra_scripts_install_dir, "ac90be33be86e6811741c528c4f4fa55eefb1139"])
+    return subprocess.run(["git", "-C", options.ghidra_scripts_install_dir, "checkout", "ac90be33be86e6811741c528c4f4fa55eefb1139"])
 
 def run_ghidrascripts_install(options : GhidraOptions):
     import subprocess
